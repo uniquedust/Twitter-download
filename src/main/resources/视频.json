@@ -1,0 +1,432 @@
+{
+  "result": {
+    "__typename": "Tweet",
+    "rest_id": "1753292225310757223",
+    "core": {
+      "user_results": {
+        "result": {
+          "__typename": "User",
+          "id": "VXNlcjoyODUxNzY3MTYx",
+          "rest_id": "2851767161",
+          "affiliates_highlighted_label": {},
+          "has_graduated_access": true,
+          "is_blue_verified": true,
+          "profile_image_shape": "Circle",
+          "legacy": {
+            "can_dm": false,
+            "can_media_tag": true,
+            "created_at": "Thu Oct 30 18:08:21 +0000 2014",
+            "default_profile": true,
+            "default_profile_image": false,
+            "description": "聰明是天賦 善良是選擇 ～ 珍惜我生而賦與的 我是我選擇成就的 ～ Cleverness is a gift Kindness is a choice ~ Appreciate what I am gifted I am what I Choose ~ Stop and Smell the Roses～",
+            "entities": {
+              "description": {
+                "urls": []
+              }
+            },
+            "fast_followers_count": 0,
+            "favourites_count": 25292,
+            "followers_count": 6421,
+            "friends_count": 1224,
+            "has_custom_timelines": false,
+            "is_translator": false,
+            "listed_count": 11,
+            "location": "Taiwan USA Japan",
+            "media_count": 1537,
+            "name": "Hitomi 瞳",
+            "normal_followers_count": 6421,
+            "pinned_tweet_ids_str": [
+              "1738518627094335909"
+            ],
+            "possibly_sensitive": false,
+            "profile_banner_url": "https://pbs.twimg.com/profile_banners/2851767161/1693667755",
+            "profile_image_url_https": "https://pbs.twimg.com/profile_images/1700170817907343360/U8xjOX2R_normal.jpg",
+            "profile_interstitial_type": "",
+            "screen_name": "schnauzerv",
+            "statuses_count": 7493,
+            "translator_type": "none",
+            "verified": false,
+            "want_retweets": false,
+            "withheld_in_countries": []
+          }
+        }
+      }
+    },
+    "unmention_data": {},
+    "unified_card": {
+      "card_fetch_state": "NoCard"
+    },
+    "edit_control": {
+      "edit_tweet_ids": [
+        "1753292225310757223"
+      ],
+      "editable_until_msecs": "1706856015000",
+      "is_edit_eligible": false,
+      "edits_remaining": "5"
+    },
+    "edit_perspective": {
+      "favorited": false,
+      "retweeted": false
+    },
+    "is_translatable": false,
+    "views": {
+      "count": "348",
+      "state": "EnabledWithCount"
+    },
+    "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+    "legacy": {
+      "bookmark_count": 0,
+      "bookmarked": false,
+      "created_at": "Fri Feb 02 05:40:15 +0000 2024",
+      "conversation_id_str": "1753290523211899261",
+      "display_text_range": [
+        0,
+        57
+      ],
+      "entities": {
+        "hashtags": [],
+        "media": [
+          {
+            "display_url": "pic.twitter.com/YS7LzuPYrM",
+            "expanded_url": "https://twitter.com/schnauzerv/status/1753292225310757223/video/1",
+            "id_str": "1753292119131959296",
+            "indices": [
+              58,
+              81
+            ],
+            "media_key": "13_1753292119131959296",
+            "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1753292119131959296/img/LDTOCl7mCtdtM79W.jpg",
+            "type": "video",
+            "url": "https://t.co/YS7LzuPYrM",
+            "additional_media_info": {
+              "monetizable": false
+            },
+            "ext_media_availability": {
+              "status": "Available"
+            },
+            "sizes": {
+              "large": {
+                "h": 720,
+                "w": 1280,
+                "resize": "fit"
+              },
+              "medium": {
+                "h": 675,
+                "w": 1200,
+                "resize": "fit"
+              },
+              "small": {
+                "h": 383,
+                "w": 680,
+                "resize": "fit"
+              },
+              "thumb": {
+                "h": 150,
+                "w": 150,
+                "resize": "crop"
+              }
+            },
+            "original_info": {
+              "height": 720,
+              "width": 1280,
+              "focus_rects": []
+            },
+            "video_info": {
+              "aspect_ratio": [
+                16,
+                9
+              ],
+              "duration_millis": 278412,
+              "variants": [
+                {
+                  "content_type": "application/x-mpegURL",
+                  "url": "https://video.twimg.com/amplify_video/1753292119131959296/pl/42Yr_zJFGWIxyn0S.m3u8?tag=14&container=cmaf"
+                },
+                {
+                  "bitrate": 832000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1753292119131959296/vid/avc1/640x360/s-pRhetTo9PDjufK.mp4?tag=14"
+                },
+                {
+                  "bitrate": 288000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1753292119131959296/vid/avc1/480x270/1OysSRuZoxiBdVsx.mp4?tag=14"
+                },
+                {
+                  "bitrate": 2176000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1753292119131959296/vid/avc1/1280x720/n7dRZziQ5veOfn02.mp4?tag=14"
+                }
+              ]
+            }
+          },
+          {
+            "display_url": "pic.twitter.com/YS7LzuPYrM",
+            "expanded_url": "https://twitter.com/schnauzerv/status/1753292225310757223/video/1",
+            "id_str": "1753292119098413056",
+            "indices": [
+              58,
+              81
+            ],
+            "media_key": "13_1753292119098413056",
+            "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1753292119098413056/img/e0-1HhaUCwsecQ69.jpg",
+            "type": "video",
+            "url": "https://t.co/YS7LzuPYrM",
+            "additional_media_info": {
+              "monetizable": false
+            },
+            "ext_media_availability": {
+              "status": "Available"
+            },
+            "sizes": {
+              "large": {
+                "h": 720,
+                "w": 1280,
+                "resize": "fit"
+              },
+              "medium": {
+                "h": 675,
+                "w": 1200,
+                "resize": "fit"
+              },
+              "small": {
+                "h": 383,
+                "w": 680,
+                "resize": "fit"
+              },
+              "thumb": {
+                "h": 150,
+                "w": 150,
+                "resize": "crop"
+              }
+            },
+            "original_info": {
+              "height": 720,
+              "width": 1280,
+              "focus_rects": []
+            },
+            "video_info": {
+              "aspect_ratio": [
+                16,
+                9
+              ],
+              "duration_millis": 218252,
+              "variants": [
+                {
+                  "bitrate": 288000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1753292119098413056/vid/avc1/480x270/3k_IBbwjV516NX_h.mp4?tag=14"
+                },
+                {
+                  "bitrate": 2176000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1753292119098413056/vid/avc1/1280x720/t0yAxgq8KQ7ee-Lg.mp4?tag=14"
+                },
+                {
+                  "bitrate": 832000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1753292119098413056/vid/avc1/640x360/EEZnyDQQ55_pEVjA.mp4?tag=14"
+                },
+                {
+                  "content_type": "application/x-mpegURL",
+                  "url": "https://video.twimg.com/amplify_video/1753292119098413056/pl/_ukY6gbM85BTfZOd.m3u8?tag=14&container=cmaf"
+                }
+              ]
+            }
+          }
+        ],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [
+          {
+            "display_url": "facebook.com/share/v/cZruDf…",
+            "expanded_url": "https://www.facebook.com/share/v/cZruDfPxoAuMRq2r/",
+            "url": "https://t.co/LaipUycHo1",
+            "indices": [
+              8,
+              31
+            ]
+          },
+          {
+            "display_url": "facebook.com/share/v/PoHdx3…",
+            "expanded_url": "https://www.facebook.com/share/v/PoHdx3mD12kEsYSF/",
+            "url": "https://t.co/b19ltD118x",
+            "indices": [
+              33,
+              56
+            ]
+          }
+        ],
+        "user_mentions": []
+      },
+      "extended_entities": {
+        "media": [
+          {
+            "display_url": "pic.twitter.com/YS7LzuPYrM",
+            "expanded_url": "https://twitter.com/schnauzerv/status/1753292225310757223/video/1",
+            "id_str": "1753292119131959296",
+            "indices": [
+              58,
+              81
+            ],
+            "media_key": "13_1753292119131959296",
+            "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1753292119131959296/img/LDTOCl7mCtdtM79W.jpg",
+            "type": "video",
+            "url": "https://t.co/YS7LzuPYrM",
+            "additional_media_info": {
+              "monetizable": false
+            },
+            "ext_media_availability": {
+              "status": "Available"
+            },
+            "sizes": {
+              "large": {
+                "h": 720,
+                "w": 1280,
+                "resize": "fit"
+              },
+              "medium": {
+                "h": 675,
+                "w": 1200,
+                "resize": "fit"
+              },
+              "small": {
+                "h": 383,
+                "w": 680,
+                "resize": "fit"
+              },
+              "thumb": {
+                "h": 150,
+                "w": 150,
+                "resize": "crop"
+              }
+            },
+            "original_info": {
+              "height": 720,
+              "width": 1280,
+              "focus_rects": []
+            },
+            "video_info": {
+              "aspect_ratio": [
+                16,
+                9
+              ],
+              "duration_millis": 278412,
+              "variants": [
+                {
+                  "content_type": "application/x-mpegURL",
+                  "url": "https://video.twimg.com/amplify_video/1753292119131959296/pl/42Yr_zJFGWIxyn0S.m3u8?tag=14&container=cmaf"
+                },
+                {
+                  "bitrate": 832000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1753292119131959296/vid/avc1/640x360/s-pRhetTo9PDjufK.mp4?tag=14"
+                },
+                {
+                  "bitrate": 288000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1753292119131959296/vid/avc1/480x270/1OysSRuZoxiBdVsx.mp4?tag=14"
+                },
+                {
+                  "bitrate": 2176000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1753292119131959296/vid/avc1/1280x720/n7dRZziQ5veOfn02.mp4?tag=14"
+                }
+              ]
+            }
+          },
+          {
+            "display_url": "pic.twitter.com/YS7LzuPYrM",
+            "expanded_url": "https://twitter.com/schnauzerv/status/1753292225310757223/video/1",
+            "id_str": "1753292119098413056",
+            "indices": [
+              58,
+              81
+            ],
+            "media_key": "13_1753292119098413056",
+            "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1753292119098413056/img/e0-1HhaUCwsecQ69.jpg",
+            "type": "video",
+            "url": "https://t.co/YS7LzuPYrM",
+            "additional_media_info": {
+              "monetizable": false
+            },
+            "ext_media_availability": {
+              "status": "Available"
+            },
+            "sizes": {
+              "large": {
+                "h": 720,
+                "w": 1280,
+                "resize": "fit"
+              },
+              "medium": {
+                "h": 675,
+                "w": 1200,
+                "resize": "fit"
+              },
+              "small": {
+                "h": 383,
+                "w": 680,
+                "resize": "fit"
+              },
+              "thumb": {
+                "h": 150,
+                "w": 150,
+                "resize": "crop"
+              }
+            },
+            "original_info": {
+              "height": 720,
+              "width": 1280,
+              "focus_rects": []
+            },
+            "video_info": {
+              "aspect_ratio": [
+                16,
+                9
+              ],
+              "duration_millis": 218252,
+              "variants": [
+                {
+                  "bitrate": 288000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1753292119098413056/vid/avc1/480x270/3k_IBbwjV516NX_h.mp4?tag=14"
+                },
+                {
+                  "bitrate": 2176000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1753292119098413056/vid/avc1/1280x720/t0yAxgq8KQ7ee-Lg.mp4?tag=14"
+                },
+                {
+                  "bitrate": 832000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1753292119098413056/vid/avc1/640x360/EEZnyDQQ55_pEVjA.mp4?tag=14"
+                },
+                {
+                  "content_type": "application/x-mpegURL",
+                  "url": "https://video.twimg.com/amplify_video/1753292119098413056/pl/_ukY6gbM85BTfZOd.m3u8?tag=14&container=cmaf"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      "favorite_count": 16,
+      "favorited": false,
+      "full_text": "張之豪影片🔗🔻\nhttps://t.co/LaipUycHo1?\nhttps://t.co/b19ltD118x? https://t.co/YS7LzuPYrM",
+      "in_reply_to_screen_name": "schnauzerv",
+      "in_reply_to_status_id_str": "1753291168614674766",
+      "in_reply_to_user_id_str": "2851767161",
+      "is_quote_status": false,
+      "lang": "ja",
+      "possibly_sensitive": false,
+      "possibly_sensitive_editable": true,
+      "quote_count": 0,
+      "reply_count": 0,
+      "retweet_count": 1,
+      "retweeted": false,
+      "user_id_str": "2851767161",
+      "id_str": "1753292225310757223"
+    }
+  }
+}
