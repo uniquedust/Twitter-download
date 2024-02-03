@@ -1,17 +1,11 @@
 package com.wgx.test;
 
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.io.file.FileReader;
-import cn.hutool.core.io.file.FileWriter;
-import cn.hutool.core.text.csv.CsvUtil;
-import cn.hutool.core.text.csv.CsvWriter;
-import cn.hutool.core.util.CharsetUtil;
-import cn.hutool.core.util.StrUtil;
-import com.wgx.utils.DataUtil;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Properties;
+import java.util.Date;
+
 
 /**
  * @author wgx
@@ -19,7 +13,7 @@ import java.util.Properties;
  */
 public class test {
     public static final String PATTERN = "(\\d\\d)(\\d\\d)";
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
 //        String  target = "profile-grid-0";
 //        System.out.println(target.contains("profile "));
 //
@@ -81,11 +75,40 @@ public class test {
 //        writer.flush();
 //        //关闭io流
 //        writer.close();
-        Properties properties = new Properties();
-        properties.load(DataUtil.class.getClassLoader().getResourceAsStream("application.properties"));
-        String property = properties.getProperty("isNeedVideo", "true");
-        System.out.println(property);
+//        Properties properties = new Properties();
+//        properties.load(DataUtil.class.getClassLoader().getResourceAsStream("application.properties"));
+//        String property = properties.getProperty("isNeedVideo", "true");
+//        System.out.println(property);
+
+
+//        DateTime parse = DateUtil.parse("2021-01-01");
+//        for(int i=0;i<10;i++){
+//            File file = new File("e:/11/"+i + ".mp4");
+//            FileUtil.touch(file);
+//            file.setLastModified(parse.getTime());
+//        }
+
+
+        // 指定视频文件路径
+        String videoFilePath = "E:\\test2\\herla172\\1.mp4";  // 替换为您的视频文件路径
+
+        // 指定新的媒体创建日期（这里假设您要将媒体创建日期修改为当前时间）
+        String newCreationDate = "20240103120000";  // 格式为yyyyMMddHHmmss
+
+        // 构建FFmpeg命令
+         String ffmpegCommand = "d:/ffmpeg -i " + videoFilePath + " -metadata creation_time=" + newCreationDate + " -c copy -y " + videoFilePath;
+
+        // 执行FFmpeg命令
+        Process process = Runtime.getRuntime().exec(ffmpegCommand);
+
+        // 等待进程执行结束
+        process.waitFor();
+
+        // 打印信息
+        System.out.println("媒体创建日期已修改为当前时间。");
+
     }
+
 
 
 }

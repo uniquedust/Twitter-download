@@ -141,6 +141,8 @@ public class Main {
             JSONObject data = JSONObject.parseObject(res);
             Map<String, String> videoMap = new HashMap<>();
             Map<String, String> photoMap = new HashMap<>();
+            //日期的相关信息应该存在videoMap，photoMap，但是改起来费劲，就新加个参数
+            Map<String, Date> dateMap = new HashMap<>();
             if (data != null && data.containsKey("data") && data.getJSONObject("data").getJSONObject("user") != null) {
                 JSONArray instructions = data.getJSONObject("data").getJSONObject("user").getJSONObject("result").getJSONObject("timeline_v2").getJSONObject("timeline").getJSONArray("instructions");
                 CsvWriter writer = null;
@@ -160,8 +162,7 @@ public class Main {
                     if ("TimelineAddToModule".equals(type)) {
                         JSONArray videoPhotoArray = ins.getJSONArray("moduleItems");
                         //从保存视频图片的json中提取有用的信息保存到map中
-                        dealItemJson(videoPhotoArray, videoMap, photoMap, writer);
-                        flag = false;
+                        flag = dealItemJson(videoPhotoArray, videoMap, photoMap, writer, dateMap);
                     }
 
                     //这个里面可以获取到页码标志，并且可以获取到第一页的数据
@@ -179,8 +180,7 @@ public class Main {
                             if (entryId.contains(RESOURCEFLAG)) {
                                 JSONArray videoPhotoArray = entries.getJSONObject(j).getJSONObject("content").getJSONArray("items");
                                 //从保存视频图片的json中提取有用的信息保存到map中
-                                dealItemJson(videoPhotoArray, videoMap, photoMap, writer);
-                                flag = false;
+                                flag = dealItemJson(videoPhotoArray, videoMap, photoMap, writer, dateMap);
                             }
 
                         }
@@ -188,6 +188,7 @@ public class Main {
 
 
                 }
+                //判断是否到了最后一页或者推文日期已经小于设置的最小日期，用于移除restIdList中的用户
                 map.put("flag" + id, flag);
 
                 if (writer != null) {
@@ -201,7 +202,7 @@ public class Main {
 
             //将获取到的图片视频url保存到本地
             String path = map.get(id + "file").toString();
-            SaveUrlFile(path, videoMap, photoMap);
+            SaveUrlFile(path, videoMap, photoMap, dateMap);
         }
         getUserMedia(map, restIdList);
 
@@ -214,14 +215,20 @@ public class Main {
      * @param videoMap        文件名->url
      * @param photoMap        文件名->url
      * @param writer          csvwriter
+     * @param dateMap         日期的相关信息应该存在videoMap，photoMap，但是改起来费劲，就新加个参数
      */
-    public static int dealItemJson(JSONArray videoPhotoArray, Map<String, String> videoMap, Map<String, String> photoMap, CsvWriter writer) {
-        logger.info("------------总数量：" + videoPhotoArray.size() + "----------");
+    public static boolean dealItemJson(JSONArray videoPhotoArray, Map<String, String> videoMap, Map<String, String> photoMap, CsvWriter writer, Map<String, Date> dateMap) {
+        logger.info("------------此次请求视频图片总数量（未过滤）：" + videoPhotoArray.size() + "----------");
+        //用于判断推文日期是否已经小于设置的最小日期，当小于的时候，递归也没有必要再进行下去
+        boolean flag = false;
         for (int k = 0; k < videoPhotoArray.size(); k++) {
             JSONObject results = videoPhotoArray.getJSONObject(k).getJSONObject("item").getJSONObject("itemContent").getJSONObject("tweet_results").getJSONObject("result");
             JSONObject legacy = results.getJSONObject("legacy");
             //获取创建日期
             Date create = DateUtil.parse(legacy.getString("created_at"));
+            //判断推文日期是否小于设置的最小日期
+            flag = DataUtil.checkMinDate(create, info.getTimeRange());
+
             //判断该推文是否符合日期要求
             if (!DataUtil.compareDate(create, info.getTimeRange())) {
                 continue;
@@ -229,7 +236,7 @@ public class Main {
 
             legacy.put("created_at", create);
             //从entries中获取图片和video的url地址
-            String[] firstVideoPhotos = getVideoPhotos(legacy, videoMap, photoMap);
+            String[] firstVideoPhotos = getVideoPhotos(legacy, videoMap, photoMap, dateMap);
             //将内容写到execl中
             if (firstVideoPhotos != null) {
                 writer.write(
@@ -238,25 +245,27 @@ public class Main {
             }
 
         }
-        //没啥用了，懒得删了
-        return videoPhotoArray.size();
+        return flag;
     }
 
     /**
      * 从第legacy中获取图片和video的url地址,并返回需要的excel内容
      *
-     * @param legacy legacy的json
-     * @param video  文件名->url
-     * @param photo  文件名->url
+     * @param legacy  legacy的json
+     * @param video   文件名->url
+     * @param photo   文件名->url
+     * @param dateMap 日期的相关信息应该存在videoMap，photoMap，但是改起来费劲，就新加个参数
      * @return 需要的excel内容
      */
-    public static String[] getVideoPhotos(JSONObject legacy, Map<String, String> video, Map<String, String> photo) {
+    public static String[] getVideoPhotos(JSONObject legacy, Map<String, String> video, Map<String, String> photo, Map<String, Date> dateMap) {
         //legacy中有entities和extended_entities，目前看暂时是一样的，取用entities中的值
         JSONObject media = legacy.getJSONObject("entities").getJSONArray("media").getJSONObject(0);
         //获取下文件的标题并处理下标题格式
         String title = DataUtil.dealString(legacy.getString("full_text"));
         String[] split = info.getExeclHead().split(";");
         String[] content = new String[split.length];
+        Date create = DateUtil.parse(legacy.getString("created_at"));
+        dateMap.put(title, create);
 
         String type = media.getString("type");
         if (info.getIsNeedPhoto() && "photo".equals(type)) {
@@ -312,11 +321,12 @@ public class Main {
     /**
      * 保存文件
      *
-     * @param path  文件路径
-     * @param video 文件名->url
-     * @param photo 文件名->url
+     * @param path    文件路径
+     * @param video   文件名->url
+     * @param photo   文件名->url
+     * @param dateMap 日期的相关信息应该存在videoMap，photoMap，但是改起来费劲，就新加个参数
      */
-    public static void SaveUrlFile(String path, Map<String, String> video, Map<String, String> photo) {
+    public static void SaveUrlFile(String path, Map<String, String> video, Map<String, String> photo, Map<String, Date> dateMap) {
         if (info.getIsNeedVideo()) {
             logger.info("----视频数量：" + video.size() + "----");
         }
@@ -330,7 +340,7 @@ public class Main {
                 videoPath = videoPath + File.separator + "v";
             }
             new File(videoPath).mkdir();
-            dealVideoAndPhoto(video, videoPath, true);
+            dealVideoAndPhoto(video, videoPath, true, dateMap);
         }
         if (info.getIsNeedPhoto()) {
             String photoPath = path;
@@ -338,7 +348,7 @@ public class Main {
                 photoPath = photoPath + File.separator + "p";
             }
             new File(photoPath).mkdir();
-            dealVideoAndPhoto(photo, photoPath, false);
+            dealVideoAndPhoto(photo, photoPath, false, dateMap);
         }
     }
 
@@ -348,8 +358,9 @@ public class Main {
      * @param videoPhoto video或photo的map，文件名->url
      * @param path       视频或者图片的地址
      * @param isVideo    是否为视频
+     * @param dateMap    日期的相关信息应该存在videoMap，photoMap，但是改起来费劲，就新加个参数
      */
-    public static void dealVideoAndPhoto(Map<String, String> videoPhoto, String path, boolean isVideo) {
+    public static void dealVideoAndPhoto(Map<String, String> videoPhoto, String path, boolean isVideo, Map<String, Date> dateMap) {
         //使用多线程保存文件
         ThreadPoolExecutor threadPool = ThreadPool.getThreadPool();
         //获取请求头
@@ -367,11 +378,16 @@ public class Main {
                 InputStream body = request.execute().bodyStream();
                 //使用hutool
                 try {
+                    String tmp ="";
                     if (isVideo) {
-                        FileUtil.writeFromStream(body, path + File.separator + fileName + ".mp4");
+                         tmp = path + File.separator + fileName + ".mp4";
+
                     } else {
-                        FileUtil.writeFromStream(body, path + File.separator + fileName + ".png");
+                         tmp = path + File.separator + fileName +  ".png";
                     }
+                    File file = new File(tmp);
+                    FileUtil.writeFromStream(body,file );
+                    file.setLastModified(dateMap.get(fileName).getTime());
 
                 } catch (Exception e) {
                     logger.error("文件创建失败：地址为" + url + ";文件名：" + fileName);

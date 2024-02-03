@@ -65,6 +65,22 @@ public class DataUtil {
     }
 
     /**
+     * 判断推文日期是否小于设置的最小日期
+     * @param param 传入日期
+     * @param timeRange 日期区间
+     */
+    public static boolean checkMinDate(Date param, String timeRange) {
+        if (StrUtil.isNotBlank(timeRange)) {
+            String[] split = timeRange.split(";");
+            Date start = DateUtil.parse(split[0]);
+            //date1 < date2，返回数小于0
+            return DateUtil.compare(param,start)<0;
+        }
+        //没有timerange那就是false
+        return false;
+    }
+
+    /**
      * 处理下文本值
      */
     public static  String dealString(String title){

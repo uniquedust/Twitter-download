@@ -3,7 +3,16 @@
 主要是参照该仓库进行开发的：https://github.com/caolvchong-top/twitter_download
 
 不过他是用python写的，我能看懂，但是想在此基础上改动就有点困难了，python毕竟不是太熟，于是有了这个java版本的，也是用于练手
+其中最恶心的应该就是分析返回的json了，可以在resource中看下，只是把最核心的json粘贴了一下，外面还有好多层。。。。。。
+# 发布
+* **2024/2/2**
+    * 首次提交
+        * 支持下载图片和视频，支持多用户下载，不同用户视频图片文件夹分开存放，支持自定义时间下载
 
+* **2024/2/3**
+    * 修复已经超过自定义日期仍反复请求的bug
+    * 将文件的`修改日期`设置为推主的`发布日期`
+    
 # 注意事项基本都在application.properties中，写的应该算是比较详细了
 ```properties
 #就算是windows路径也请用 '/' 而不是反斜杠(可以留空)
@@ -44,10 +53,9 @@ UserMediaBottom:"includePromotedContent":false,"withClientEventToken":false,"wit
 ```
 # 关于cookie的获取
 就是找个请求，看下cookie就行
-![](https://cdn.jsdelivr.net/gh/uniquedist/PictureBed/cookie.png)
-
 # 过程
-![](https://cdn.jsdelivr.net/gh/uniquedist/PictureBed/%E8%BF%87%E7%A8%8B.png)
+
 # 效果图
 可以自行决定是否只下载图片或者只下载视频，视频图片文件名使用的是博主发布的标题名称
-![](https://cdn.jsdelivr.net/gh/uniquedist/PictureBed/%E6%95%88%E6%9E%9C%E5%9B%BE.png)
+
+修改日期为博主发布的日期，默认有时候展示的是日期，而不是修改日期，需要自己调出来
