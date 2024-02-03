@@ -53,9 +53,11 @@ UserMediaBottom:"includePromotedContent":false,"withClientEventToken":false,"wit
 ```
 # 关于cookie的获取
 就是找个请求，看下cookie就行
+![](https://raw.githubusercontent.com/uniquedist/Twitter-download/main/src/main/resources/pic/cookie.png)
 # 过程
-
+![](https://raw.githubusercontent.com/uniquedist/Twitter-download/main/src/main/resources/pic/过程.png)
 # 效果图
 可以自行决定是否只下载图片或者只下载视频，视频图片文件名使用的是博主发布的标题名称
-
+![](https://raw.githubusercontent.com/uniquedist/Twitter-download/main/src/main/resources/pic/效果图.png)
 修改日期为博主发布的日期，默认有时候展示的是日期，而不是修改日期，需要自己调出来
+![](https://raw.githubusercontent.com/uniquedist/Twitter-download/main/src/main/resources/pic/日期.png)
