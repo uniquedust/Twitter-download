@@ -30,7 +30,7 @@ public class ThreadPool {
     /**
      * 任务阻塞队列大小
      */
-    private static final int QUEUE_SIZE = 100;
+    private static final int QUEUE_SIZE = 10000;
 
     /**
      * 线程名字
