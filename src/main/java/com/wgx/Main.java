@@ -378,20 +378,42 @@ public class Main {
                 InputStream body = request.execute().bodyStream();
                 //使用hutool
                 try {
-                    String tmp ="";
+                    String tmp = "";
                     if (isVideo) {
-                         tmp = path + File.separator + fileName + ".mp4";
+                        tmp = path + File.separator + fileName + ".mp4";
 
                     } else {
-                         tmp = path + File.separator + fileName +  ".png";
+                        tmp = path + File.separator + fileName + ".png";
                     }
-                    File file = new File(tmp);
-                    FileUtil.writeFromStream(body,file );
-                    file.setLastModified(dateMap.get(fileName).getTime());
-
+                    //文件不存在进行写入
+                    if(!FileUtil.exist(tmp)){
+                        File file = new File(tmp);
+                        FileUtil.writeFromStream(body, file);
+                        file.setLastModified(dateMap.get(fileName).getTime());
+                    }
                 } catch (Exception e) {
-                    logger.error("文件创建失败：地址为" + url + ";文件名：" + fileName);
-                    logger.error(e.getMessage(), e);
+                    //失败直接使用对应的英文字母作为文件名
+                    String tempFilename = url.substring(url.lastIndexOf("/") + 1, url.lastIndexOf("."));
+                    //直接重试
+                    String tmp = "";
+                    if (isVideo) {
+                        tmp = path + File.separator + tempFilename + ".mp4";
+
+                    } else {
+                        tmp = path + File.separator + tempFilename + ".png";
+                    }
+                    try {
+                        if(!FileUtil.exist(tmp)){
+                            File file = new File(tmp);
+                            FileUtil.writeFromStream(body, file);
+                            file.setLastModified(dateMap.get(fileName).getTime());
+                        }
+                    } catch (Exception x) {
+                        //再次失败打印错误日志
+                        logger.error("文件创建失败：地址为" + url + ";文件名：" + fileName);
+                        logger.error(x.getMessage(), x);
+                    }
+
                 }
             });
         }
