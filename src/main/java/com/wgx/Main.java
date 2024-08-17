@@ -1,6 +1,7 @@
 package com.wgx;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.text.csv.CsvUtil;
@@ -43,6 +44,9 @@ public class Main {
     private static final String PAGEFLAG = "bottom";
     //资源标记
     private static final String RESOURCEFLAG = "profile";
+    //初始日期
+    private static final String INITDATE = "1970-01-01";
+
 
     //根据用户名映射的视频图片url列表
     private static final Map<String, List<String>> resourceMap;
@@ -128,9 +132,10 @@ public class Main {
             restIdList.remove(needDelete);
         }
 
-        //由于并发，可能导致出现该错误java.util.ConcurrentModificationException，这边也给改成iterater遍历
         //处理请求回来的json
         for (String id : restIdList) {
+            Date maxModifyDate = (Date) map.get(id + "maxdate");
+
             Future future = futureMap.get(id);
             String res = null;
             try {
@@ -161,6 +166,8 @@ public class Main {
                     //其他页
                     if ("TimelineAddToModule".equals(type)) {
                         JSONArray videoPhotoArray = ins.getJSONArray("moduleItems");
+                        //将最大修改时间到dateMap中
+                        dateMap.put("maxModifyDate",maxModifyDate);
                         //从保存视频图片的json中提取有用的信息保存到map中
                         flag = dealItemJson(videoPhotoArray, videoMap, photoMap, writer, dateMap);
                     }
@@ -179,6 +186,8 @@ public class Main {
 
                             if (entryId.contains(RESOURCEFLAG)) {
                                 JSONArray videoPhotoArray = entries.getJSONObject(j).getJSONObject("content").getJSONArray("items");
+                                //将最大修改时间到dateMap中
+                                dateMap.put("maxModifyDate",maxModifyDate);
                                 //从保存视频图片的json中提取有用的信息保存到map中
                                 flag = dealItemJson(videoPhotoArray, videoMap, photoMap, writer, dateMap);
                             }
@@ -219,6 +228,7 @@ public class Main {
      */
     public static boolean dealItemJson(JSONArray videoPhotoArray, Map<String, String> videoMap, Map<String, String> photoMap, CsvWriter writer, Map<String, Date> dateMap) {
         logger.info("------------此次请求视频图片总数量（未过滤）：" + videoPhotoArray.size() + "----------");
+        Date maxModifyDate = dateMap.get("maxModifyDate");
         //用于判断推文日期是否已经小于设置的最小日期，当小于的时候，递归也没有必要再进行下去
         boolean flag = false;
         for (int k = 0; k < videoPhotoArray.size(); k++) {
@@ -227,10 +237,10 @@ public class Main {
             //获取创建日期
             Date create = DateUtil.parse(legacy.getString("created_at"));
             //判断推文日期是否小于设置的最小日期
-            flag = DataUtil.checkMinDate(create, info.getTimeRange());
+            flag = DataUtil.checkMinDate(create, info.getTimeRange(),maxModifyDate);
 
             //判断该推文是否符合日期要求
-            if (!DataUtil.compareDate(create, info.getTimeRange())) {
+            if (!DataUtil.compareDate(create, info.getTimeRange(),maxModifyDate)) {
                 continue;
             }
 
@@ -254,7 +264,7 @@ public class Main {
      * @param legacy  legacy的json
      * @param video   文件名->url
      * @param photo   文件名->url
-     * @param dateMap 日期的相关信息应该存在videoMap，photoMap，但是改起来费劲，就新加个参数
+     * @param dateMap 日期的相关信息应该存在videoMap，photoMap，但是改起来费劲，就新加个参数(用来存推文发布时间的,然后将文件的修改时间改为发布时间)
      * @return 需要的excel内容
      */
     public static String[] getVideoPhotos(JSONObject legacy, Map<String, String> video, Map<String, String> photo, Map<String, Date> dateMap) {
@@ -324,29 +334,23 @@ public class Main {
      * @param path    文件路径
      * @param video   文件名->url
      * @param photo   文件名->url
-     * @param dateMap 日期的相关信息应该存在videoMap，photoMap，但是改起来费劲，就新加个参数
+     * @param dateMap 日期的相关信息应该存在videoMap，photoMap，但是改起来费劲，就新加个参数(用来存推文发布时间的,然后将文件的修改时间改为发布时间)
      */
     public static void SaveUrlFile(String path, Map<String, String> video, Map<String, String> photo, Map<String, Date> dateMap) {
         if (info.getIsNeedVideo()) {
-            logger.info("----视频数量：" + video.size() + "----");
+            logger.info("----实际下载视频数量：" + video.size() + "----");
         }
         if (info.getIsNeedPhoto()) {
-            logger.info("----图片数量：" + photo.size() + "----");
+            logger.info("----实际下载图片数量：" + photo.size() + "----");
         }
 
         if (info.getIsNeedVideo()) {
-            String videoPath = path;
-            if (info.getIsNeedPhoto()) {
-                videoPath = videoPath + File.separator + "v";
-            }
+            String videoPath = path + File.separator + "v";
             new File(videoPath).mkdir();
             dealVideoAndPhoto(video, videoPath, true, dateMap);
         }
         if (info.getIsNeedPhoto()) {
-            String photoPath = path;
-            if (info.getIsNeedVideo()) {
-                photoPath = photoPath + File.separator + "p";
-            }
+            String photoPath = path + File.separator + "p";
             new File(photoPath).mkdir();
             dealVideoAndPhoto(photo, photoPath, false, dateMap);
         }
@@ -358,7 +362,7 @@ public class Main {
      * @param videoPhoto video或photo的map，文件名->url
      * @param path       视频或者图片的地址
      * @param isVideo    是否为视频
-     * @param dateMap    日期的相关信息应该存在videoMap，photoMap，但是改起来费劲，就新加个参数
+     * @param dateMap    日期的相关信息应该存在videoMap，photoMap，但是改起来费劲，就新加个参数(用来存推文发布时间的,然后将文件的修改时间改为发布时间)
      */
     public static void dealVideoAndPhoto(Map<String, String> videoPhoto, String path, boolean isVideo, Map<String, Date> dateMap) {
         //使用多线程保存文件
@@ -386,7 +390,7 @@ public class Main {
                         tmp = path + File.separator + fileName + ".png";
                     }
                     //文件不存在进行写入
-                    if(!FileUtil.exist(tmp)){
+                    if (!FileUtil.exist(tmp)) {
                         File file = new File(tmp);
                         FileUtil.writeFromStream(body, file);
                         file.setLastModified(dateMap.get(fileName).getTime());
@@ -403,7 +407,7 @@ public class Main {
                         tmp = path + File.separator + tempFilename + ".png";
                     }
                     try {
-                        if(!FileUtil.exist(tmp)){
+                        if (!FileUtil.exist(tmp)) {
                             File file = new File(tmp);
                             FileUtil.writeFromStream(body, file);
                             file.setLastModified(dateMap.get(fileName).getTime());
@@ -481,6 +485,11 @@ public class Main {
                 //保存下文件夹地址
                 map.put(result.getString("rest_id") + "file", path);
 
+                //如果对应目录下已经有文件了,则遍历取下文件中最大的修改时间
+                DateTime maxModifyTime = DateUtil.parse(INITDATE, "yyyy-MM-dd");
+                getAllFiles(file, maxModifyTime);
+                map.put(result.getString("rest_id") + "maxdate", maxModifyTime);
+
                 map.put(result.getString("rest_id"), name);
                 if (info.getIsNeedEXecl()) {
                     String fileName = path + File.separator + name + ".csv";
@@ -507,6 +516,28 @@ public class Main {
         }
         map.put("list", restIdList);
         return map;
+    }
+
+    /**
+     * 递归遍历此路径的文件夹,找到其中的最大修改时间
+     */
+    private static void getAllFiles(File file, Date maxDate) {
+        if (file.exists()) {
+            File[] files = file.listFiles();
+            if (null != files) {
+                for (File file2 : files) {
+                    if (file2.isDirectory()) {
+                        //递归
+                        getAllFiles(file2, maxDate);
+                    } else {
+                        long l = file2.lastModified();
+                        if (l > maxDate.getTime()) {
+                            maxDate.setTime(l);
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
