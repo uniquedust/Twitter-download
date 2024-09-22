@@ -48,16 +48,11 @@ public class Main {
     private static final String INITDATE = "1970-01-01";
 
 
-    //根据用户名映射的视频图片url列表
-    private static final Map<String, List<String>> resourceMap;
-
-
     private static final UserInfo info;
 
     static {
         info = DataUtil.getProperty();
         pageMap = new HashMap<>();
-        resourceMap = new HashMap<>();
     }
 
     public static void main(String[] args) {
@@ -167,7 +162,7 @@ public class Main {
                     if ("TimelineAddToModule".equals(type)) {
                         JSONArray videoPhotoArray = ins.getJSONArray("moduleItems");
                         //将最大修改时间到dateMap中
-                        dateMap.put("maxModifyDate",maxModifyDate);
+                        dateMap.put("maxModifyDate", maxModifyDate);
                         //从保存视频图片的json中提取有用的信息保存到map中
                         flag = dealItemJson(videoPhotoArray, videoMap, photoMap, writer, dateMap);
                     }
@@ -187,7 +182,7 @@ public class Main {
                             if (entryId.contains(RESOURCEFLAG)) {
                                 JSONArray videoPhotoArray = entries.getJSONObject(j).getJSONObject("content").getJSONArray("items");
                                 //将最大修改时间到dateMap中
-                                dateMap.put("maxModifyDate",maxModifyDate);
+                                dateMap.put("maxModifyDate", maxModifyDate);
                                 //从保存视频图片的json中提取有用的信息保存到map中
                                 flag = dealItemJson(videoPhotoArray, videoMap, photoMap, writer, dateMap);
                             }
@@ -233,14 +228,18 @@ public class Main {
         boolean flag = false;
         for (int k = 0; k < videoPhotoArray.size(); k++) {
             JSONObject results = videoPhotoArray.getJSONObject(k).getJSONObject("item").getJSONObject("itemContent").getJSONObject("tweet_results").getJSONObject("result");
+            //不知道为啥,这边的json不同的的用户可能不一致,有的用户下直接是legacy,有的用户多了个tweet
+            if (results.containsKey("tweet")) {
+                results = results.getJSONObject("tweet");
+            }
             JSONObject legacy = results.getJSONObject("legacy");
             //获取创建日期
             Date create = DateUtil.parse(legacy.getString("created_at"));
             //判断推文日期是否小于设置的最小日期
-            flag = DataUtil.checkMinDate(create, info.getTimeRange(),maxModifyDate);
+            flag = DataUtil.checkMinDate(create, info.getTimeRange(), maxModifyDate);
 
             //判断该推文是否符合日期要求
-            if (!DataUtil.compareDate(create, info.getTimeRange(),maxModifyDate)) {
+            if (!DataUtil.compareDate(create, info.getTimeRange(), maxModifyDate)) {
                 continue;
             }
 
@@ -275,19 +274,34 @@ public class Main {
         String[] split = info.getExeclHead().split(";");
         String[] content = new String[split.length];
         Date create = DateUtil.parse(legacy.getString("created_at"));
-        dateMap.put(title, create);
+        String uuid = UUID.randomUUID().toString();
+        if (StrUtil.isEmpty(title)) {
+            title = uuid;
+        }
+        if (dateMap.containsKey(title)) {
+            dateMap.put(title + uuid, create);
+        } else {
+            dateMap.put(title, create);
+        }
 
         String type = media.getString("type");
+
         if (info.getIsNeedPhoto() && "photo".equals(type)) {
             String url = media.getString("media_url_https");
             content[0] = url;
-            photo.put(title, url);
+            //防止重名
+            if (photo.containsKey(title)) {
+                photo.put(title + uuid, url);
+            } else {
+                photo.put(title, url);
+            }
         }
-        if (info.getIsNeedVideo() && "video".equals(type)) {
+        //twitter的动态图是一个小视频
+        if (info.getIsNeedVideo() && ("video".equals(type) || "animated_gif".equals(type))) {
             JSONArray variants = media.getJSONObject("video_info").getJSONArray("variants");
             //找比特率最大的视频取url
             JSONObject tmp = new JSONObject();
-            int max = 0;
+            int max = -1;
             for (int i = 0; i < variants.size(); i++) {
                 JSONObject v = variants.getJSONObject(i);
                 int bitrate = v.getIntValue("bitrate");
@@ -297,9 +311,13 @@ public class Main {
                 }
             }
             content[0] = tmp.getString("url");
-            video.put(title, tmp.getString("url"));
+            //防止重名
+            if (video.containsKey(title)) {
+                video.put(title + uuid, tmp.getString("url"));
+            } else {
+                video.put(title, tmp.getString("url"));
+            }
         }
-
 
         //判断是否需要将值打印到execl中
         if (info.getIsNeedEXecl() && ((info.getIsNeedPhoto() && "photo".equals(type)) || (info.getIsNeedVideo() && "video".equals(type)))) {
@@ -385,7 +403,6 @@ public class Main {
                     String tmp = "";
                     if (isVideo) {
                         tmp = path + File.separator + fileName + ".mp4";
-
                     } else {
                         tmp = path + File.separator + fileName + ".png";
                     }
@@ -396,8 +413,8 @@ public class Main {
                         file.setLastModified(dateMap.get(fileName).getTime());
                     }
                 } catch (Exception e) {
-                    //失败直接使用对应的英文字母作为文件名
-                    String tempFilename = url.substring(url.lastIndexOf("/") + 1, url.lastIndexOf("."));
+                    //失败直接使用uuid
+                    String tempFilename = UUID.randomUUID().toString();
                     //直接重试
                     String tmp = "";
                     if (isVideo) {
@@ -450,7 +467,7 @@ public class Main {
             logger.info(url);
 
             headMap.put(Header.REFERER.getValue(), REFERER + name);
-
+            //headMap.put("X-Csrf-Token",info.getCsrfToken());
             //将返回值存到futuremap中
             futureMap.put(name, getFutureMap(url, headMap));
         }
